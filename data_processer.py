@@ -67,7 +67,38 @@ def process_match_data(csv_path, db_path):
     df = df.fillna('N/A')
 
     # 3. Load: Push to SQLite using UPSERT logic
-    conn = sqlite3.connect(db_path)
+    conn = sq.connect(db_path)
     
     # Push the dataframe to a temporary table first
     df.to_sql('temp_match_data', conn, if_exists='replace', index=False)
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(match_data)")
+        db_columns = [row[1] for row in cursor.fetchall()]
+        common_cols = [c for c in df.colmuns if c in db_columns]
+        cols_string = ", ".join(common_cols)
+        upsert_query = f"""
+        INSERT OR REPLACE INTO match_data({cols_string})
+        SELECT {cols_string} FROM temp_match_data;"""
+        cursor.execute(upsert_query)
+        conn.commit()
+        print(f"Successfully processed and loaded {len(df)} rows in match data")
+        
+    except sq.Error as e:
+        print(f"database error during insert{e}")
+    
+    finally:
+        cursor.execute("DROP TABLE IF EXIST temp_match_data")
+        conn.close()
+
+if __name__ == "__main__":
+    # Define paths based on our directory structure
+    csv_file = '../data/match_export.csv'
+    database_file = '../database/scouting_2026.db'
+    
+    # Create a dummy data directory if running from scripts folder
+    os.makedirs('../data', exist_ok=True)
+
+    # Run the engine
+    process_match_data(csv_file, database_file)
