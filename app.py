@@ -480,7 +480,7 @@ elif page == "Pre-Match Predictor":
             df['autoStartPref']      = df['autoStartPref'].fillna('No pit data')
             df['robotStrategy']      = df['robotStrategy'].fillna('No pit data')
             df['climb_reliability']  = df['climb_reliability'].fillna(0.0)
-            df['volley_success_rate']= df['volley_success_rate'].fillna(0.0)
+            df['volley_quality_score']= df['volley_quality_score'].fillna(0.0)
             df['tier']               = df['tier'].fillna('No data')
             df['epa_total']          = df['epa_total'].fillna(0.0)
 
@@ -489,7 +489,7 @@ elif page == "Pre-Match Predictor":
             st.dataframe(
                 df[[
                     'Alliance', 'teamNumber', 'tier', 'matches_played',
-                    'avg_contributed_points', 'volley_success_rate',
+                    'avg_contributed_points', 'volley_quality_score',
                     'climb_reliability', 'epa_total',
                     'autoStartPref', 'robotStrategy'
                 ]].rename(columns={
