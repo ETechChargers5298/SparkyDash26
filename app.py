@@ -7,6 +7,8 @@ from pathlib import Path
 from data_processor import process_match_data, process_pit_data
 from TBA import get_our_matches, get_team_ranking, get_event_rankings, get_event_matches, parse_match, api_error_message, API_OK, API_NO_DATA, API_ERROR
 from statbotics import get_event_epas, get_team_epa
+import shutil
+from datetime import datetime
 
 # Check if we are running on the Streamlit Cloud or locally where config.py exists
 import streamlit as st
@@ -746,19 +748,40 @@ elif page == "Data Management":
             confirmation = st.radio("Are you sure you want to upload this match data?",
                                     options=["No", "Yes"], index=0, key="match_confirm")
             if confirmation == "Yes":
+
                 if st.button("✅ Confirm and Upload Match Data"):
-                    with st.spinner("Writing to database..."):
+                    with st.spinner("Writing to database and saving file..."):
+                        # 1. Create a temporary file for processing
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmp:
                             tmp.write(uploaded_match.getvalue())
                             tmp_path = Path(tmp.name)
+                        
                         try:
+                            # 2. Process the match data into SQLite
                             process_match_data(tmp_path, DB_PATH)
+                            
+                            # 3. Ensure the permanent data directory exists
+                            save_dir = Path(__file__).resolve().parent / 'data'
+                            save_dir.mkdir(exist_ok=True)
+                            
+                            # 4. Create a timestamped filename to avoid overwriting files
+                            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                            permanent_name = f"match_data_upload_{timestamp}.csv"
+                            permanent_path = save_dir / permanent_name
+                            
+                            # 5. Move from temporary to permanent data folder 
+                            shutil.move(str(tmp_path), str(permanent_path))
+                            
+                            # 6. Clear cache to refresh dashboard results 
                             st.cache_data.clear()
-                            st.success(f"✅ Successfully loaded {len(preview_df)} rows into 'match_data'!")
+                            st.success(f"✅ Successfully loaded {len(preview_df)} rows and saved file as {permanent_name}!")
+                            
                         except Exception as e:
                             st.error(f"❌ Something went wrong: {e}")
-                        finally:
-                            tmp_path.unlink(missing_ok=True)
+                            # Clean up temp file if the move was never completed 
+                            if tmp_path.exists():
+                                tmp_path.unlink()
+
             else:
                 st.info("Select **Yes** above and then click Confirm to proceed.")
 
@@ -778,19 +801,44 @@ elif page == "Data Management":
             pit_confirmation = st.radio("Are you sure you want to upload this pit data?",
                                         options=["No", "Yes"], index=0, key="pit_confirm")
             if pit_confirmation == "Yes":
+
+
                 if st.button("✅ Confirm and Upload Pit Data"):
-                    with st.spinner("Writing to database..."):
+                    with st.spinner("Writing to database and saving file..."):
+                        # 1. Create the temp file for the processor to read
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmp:
                             tmp.write(uploaded_pit.getvalue())
                             tmp_path = Path(tmp.name)
+                        
                         try:
+                            # 2. Process data into SQLite
                             process_pit_data(tmp_path, DB_PATH)
+                            
+                            # 3. Ensure permanent data directory exists 
+                            save_dir = Path(__file__).resolve().parent / 'data'
+                            save_dir.mkdir(exist_ok=True)
+                            
+                            # 4. Create a timestamped filename to prevent overwriting
+                            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                            permanent_name = f"pit_scout_upload_{timestamp}.csv"
+                            permanent_path = save_dir / permanent_name
+                            
+                            # 5. Move from temp to permanent data folder
+                            shutil.move(str(tmp_path), str(permanent_path))
+                            
+                            # 6. Refresh app state
                             st.cache_data.clear()
-                            st.success(f"✅ Successfully loaded {len(preview_pit)} rows into 'pit_data'!")
+                            st.success(f"✅ Successfully loaded {len(preview_pit)} rows and saved file as {permanent_name}!")
+                            
                         except Exception as e:
                             st.error(f"❌ Something went wrong: {e}")
-                        finally:
-                            tmp_path.unlink(missing_ok=True)
+                            # Clean up the temp file if the move failed
+                            if tmp_path.exists():
+                                tmp_path.unlink()
+
+
+
+
             else:
                 st.info("Select **Yes** above and then click Confirm to proceed.")
 

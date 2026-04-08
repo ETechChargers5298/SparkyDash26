@@ -231,7 +231,7 @@
   },
   {
     "type": "textblock",
-    "label": "Extra notes?",
-    "id": "extra"
+    "label": "Extra Pit Scout notes?",
+    "id": "pit_notes"
   }
 ]
