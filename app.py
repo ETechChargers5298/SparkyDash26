@@ -7,7 +7,7 @@ import plotly.express as px
 from pathlib import Path
 from data_processor import process_match_data, process_pit_data
 from TBA import get_our_matches, get_team_ranking, get_event_rankings, get_event_matches, parse_match, api_error_message, API_OK, API_NO_DATA, API_ERROR
-from Config import OUR_TEAM, EVENT_KEY
+from config import OUR_TEAM, EVENT_KEY
 from statbotics import get_event_epas, get_team_epa
 
 # --- CONFIG ---
@@ -204,7 +204,7 @@ def load_prematch_teams(teams):
             SUM(CASE WHEN m.teleClimb != 'None' AND m.teleClimb != 'N/A' AND m.teleClimb != '' THEN 1 ELSE 0 END)
             * 1.0 / COUNT(m.matchNumber), 3
         )                                           AS climb_reliability,
-        p.driveTrain, p.autoStartPref, p.robotStrategy, p.climbAbility
+        p.driveBaseType, p.autoStartPref, p.roboStrat, p.climbAbility
     FROM match_data m
     LEFT JOIN pit_data p ON m.teamNumber = p.teamNumber
     WHERE m.teamNumber IN ({placeholders})

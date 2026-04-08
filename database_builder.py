@@ -102,7 +102,7 @@ def create_database():
         extendMultiDir TEXT,
         useTurret BOOLEAN,
         numberOfTurrets INTEGER DEFAULT 0,
-        hopperCapacity INTGER DEFAULT 0,
+        hopperCapacity INTEGER DEFAULT 0,
         useVision BOOLEAN,
         canRetract        BOOLEAN,
         climbAbility      TEXT,
@@ -117,7 +117,7 @@ def create_database():
         L1Auto BOOLEAN,
         L1Climb BOOLEAN,
         L2Climb BOOLEAN,
-        L3Climb BOOLEAN,
+        L3Climb BOOLEAN
     )
     ''')
 

@@ -1,6 +1,6 @@
 import requests
 import streamlit as st
-from Config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
 
 BASE_URL = "https://www.thebluealliance.com/api/v3"
 HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}

@@ -1,6 +1,6 @@
 import requests
 import streamlit as st
-from Config import EVENT_KEY
+from config import EVENT_KEY
 
 STATBOTICS_BASE = "https://api.statbotics.io/v3"
 
