@@ -1,13 +1,19 @@
 import requests
-
-# Check if we are running on the Streamlit Cloud or locally where config.py exists
 import streamlit as st
+
+# Check if we are running on the Streamlit Cloud or locally
 try:
+    # 1. Try Streamlit Secrets (Cloud)
     TBA_API_KEY = st.secrets["TBA_API_KEY"]
     EVENT_KEY = st.secrets["EVENT_KEY"]
     OUR_TEAM = st.secrets["OUR_TEAM"]
 except Exception:
-    from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+    # 2. Fallback to local config.py (Laptop)
+    try:
+        from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+    except ImportError:
+        st.error("❌ Configuration Error: Could not find Streamlit Secrets OR config.py.")
+        st.stop() # Stops the app here so it doesn't crash later on line 14
 
 BASE_URL = "https://www.thebluealliance.com/api/v3"
 HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
