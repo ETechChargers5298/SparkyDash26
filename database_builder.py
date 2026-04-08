@@ -17,57 +17,57 @@ def create_database():
     CREATE TABLE IF NOT EXISTS match_data (
 
         -- Identity
-        matchNumber INTEGER,
-        teamNumber  INTEGER,
+        match_number INTEGER,
+        team_number  INTEGER,
 
         -- Auto Period
-        startPosition         TEXT,
-        autoHerdingPushWave   INTEGER DEFAULT 0,
-        autoHerdingSpitWave   INTEGER DEFAULT 0,
-        autoHerdingLaunchWave INTEGER DEFAULT 0,
-        autoVolleysAttempted  INTEGER DEFAULT 0,
-        autoVolleyQuality     TEXT    DEFAULT 'Average',
-        autoClimbLevel        TEXT,
-        autoClimbPos          TEXT,
-        crossBumpAuto         BOOLEAN,
-        crossTrenchAuto       BOOLEAN,
-        autoBreakDown         BOOLEAN DEFAULT 0,
-        autoBreakDownDes      TEXT,
+        start_position         TEXT,
+        auto_herding_push_wave   INTEGER DEFAULT 0,
+        auto_herding_spit_wave   INTEGER DEFAULT 0,
+        auto_herding_launch_wave INTEGER DEFAULT 0,
+        auto_volleys_attempted  INTEGER DEFAULT 0,
+        auto_volley_quality     TEXT    DEFAULT 'Average',
+        auto_climb_level        TEXT,
+        auto_climb_pos          TEXT,
+        cross_bump_auto         BOOLEAN,
+        cross_trench_auto       BOOLEAN,
+        auto_breakdown         BOOLEAN DEFAULT 0,
+        auto_breakdown_des      TEXT,
 
         -- Teleop Period
-        teleHerdingPushWave   INTEGER DEFAULT 0,
-        teleHerdingSpitWave   INTEGER DEFAULT 0,
-        teleHerdingLaunchWave INTEGER DEFAULT 0,
-        volleysAttempted      INTEGER DEFAULT 0,
-        volleyQuality         TEXT    DEFAULT 'Average',
-        teleFeed              INTEGER DEFAULT 0,
-        crossBumpTele         BOOLEAN,
-        crossTrenchTele       BOOLEAN,
-        defendedTime          BOOLEAN,
-        scoringLocations      TEXT,
-        feedingLocations      TEXT,
+        tele_herding_push_wave   INTEGER DEFAULT 0,
+        tele_herding_spit_wave   INTEGER DEFAULT 0,
+        tele_herding_launch_wave INTEGER DEFAULT 0,
+        tele_volleys_attempted      INTEGER DEFAULT 0,
+        tele_volley_quality         TEXT    DEFAULT 'Average',
+        tele_feed              INTEGER DEFAULT 0,
+        cross_bump_tele         BOOLEAN,
+        cross_trench_tele       BOOLEAN,
+        defended_time          BOOLEAN,
+        scoring_locations      TEXT,
+        feeding_locations      TEXT,
 
         -- Endgame & Qualitative
-        teleClimb        TEXT,
-        climbTime        INTEGER,
-        drivetrainSpeed  TEXT,
-        driverSkill      TEXT,
+        tele_climb        TEXT,
+        climb_time        INTEGER,
+        drivebase_speed  TEXT,
+        driver_skill      TEXT,
 
         -- Metrics
-        robotTier         TEXT    DEFAULT 'None',
-        contributedPoints INTEGER DEFAULT 0,
+        robot_tier         TEXT    DEFAULT 'None',
+        contributed_points INTEGER DEFAULT 0,
 
         -- Penalties & Notes
-        freeClimbPenalty BOOLEAN,
-        teleBreakDown    BOOLEAN DEFAULT 0,
-        teleBreakDownDes TEXT,
-        matchNotes       TEXT,
+        free_climb_penalty BOOLEAN,
+        tele_breakdown    BOOLEAN DEFAULT 0,
+        tele_breakdown_des TEXT,
+        match_notes       TEXT,
 
         -- Calculated by data_processor.py during ETL
-        allianceFuel       INTEGER DEFAULT 0,
+        alliance_fuel       INTEGER DEFAULT 0,
         proportional_score REAL    DEFAULT 0.0,
 
-        PRIMARY KEY (matchNumber, teamNumber)
+        PRIMARY KEY (match_number, team_number)
     )
     ''')
 
@@ -75,52 +75,53 @@ def create_database():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS pit_data (
 
-        teamNumber INTEGER PRIMARY KEY,
+        team_number INTEGER PRIMARY KEY,
+        team_key                INTEGER DEFAULT 0,
 
         -- Driver & Strategy
-        driverexp      TEXT,
-        autoPref       TEXT,
-        driverPref     TEXT,
-        autoRoboStrat  TEXT,
-        roboStrat      TEXT,
-        roboBestAuto   REAL    DEFAULT 0,
+        driver_exp      TEXT,
+        auto_start_pref       TEXT,
+        driver_station_pref     TEXT,
+        auto_robo_strat  TEXT,
+        robo_strat      TEXT,
+        robo_best_auto   REAL    DEFAULT 0,
 
         -- Drive Base
-        driveBaseType  TEXT,
-        driveBaseNotes TEXT,
+        drivebase_type  TEXT,
+        drivebase_notes TEXT,
 
         -- Robot Dimensions
-        robotWidth     REAL,
-        robotLength    REAL,
-        robotHeight    REAL,
+        robot_width     REAL,
+        robot_length    REAL,
+        robot_height    REAL,
 
         -- Robot Specs
         extendable      BOOLEAN,
-        extendMultiDir  BOOLEAN,
-        useTurret       BOOLEAN,
-        numberOfTurrets INTEGER DEFAULT 0,
-        volleyAmount    INTEGER DEFAULT 0,
-        hopperCapacity  INTEGER DEFAULT 0,
-        useVision       BOOLEAN,
+        extend_multi_dir  BOOLEAN,
+        use_turret       BOOLEAN,
+        num_turrets INTEGER DEFAULT 0,
+        volley_amount    INTEGER DEFAULT 0,
+        hopper_capacity  INTEGER DEFAULT 0,
+        use_vision       BOOLEAN,
 
         -- Climb Capabilities
-        Climb   BOOLEAN,
-        L1Auto  BOOLEAN,
-        L1Climb BOOLEAN,
-        L2Climb BOOLEAN,
-        L3Climb BOOLEAN,
+        climb   BOOLEAN,
+        l1_auto  BOOLEAN,
+        l1_climb BOOLEAN,
+        l2_climb BOOLEAN,
+        l3_climb BOOLEAN,
 
         -- Intake Capabilities
-        gIntake  BOOLEAN,
-        HPIntake BOOLEAN,
-        dIntake  BOOLEAN,
+        ground_intake  BOOLEAN,
+        hp_intake BOOLEAN,
+        depot_intake  BOOLEAN,
 
         -- Shooting
-        moveShoot  BOOLEAN,
-        shootArea  TEXT,
+        move_shoot  BOOLEAN,
+        shoot_area  TEXT,
 
         -- General
-        robotDescription TEXT,
+        robot_des TEXT,
         extra            TEXT
     )
     ''')

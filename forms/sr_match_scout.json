@@ -1,0 +1,335 @@
+[
+  {
+    "type": "header",
+    "label": "PRE-MATCH & AUTO DATA"
+  },
+  {
+    "type": "multiselect",
+    "label": "Auto Start Position",
+    "options": [
+      "Depot",
+      "Mid",
+      "Outpost"
+    ],
+    "id": "start_position"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "header",
+    "label": "AUTONOMOUS"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Volleys"
+  },
+  {
+    "type": "counter",
+    "label": "A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
+    "id": "auto_volleys_attempted",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "multiselect",
+    "label": "Auto Volley Quality",
+    "options": [
+      "Perfect: 95-100%",
+      "Above Average: 75-90%",
+      "Average: 50-75%",
+      "Below Average: Well-below 50%"
+    ],
+    "id": "auto_volley_quality"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Movement"
+  },
+  {
+    "type": "checkbox",
+    "label": "Crossed Trench?",
+    "id": "cross_trench_auto"
+  },
+  {
+    "type": "checkbox",
+    "label": "Crossed Bump?",
+    "id": "cross_bump_auto"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Push Wave"
+  },
+  {
+    "type": "counter",
+    "label": "Bumper pushes fuel under trench or over bump",
+    "id": "auto_herding_push_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Spit Wave"
+  },
+  {
+    "type": "counter",
+    "label": "Fill hopper, and then dump into alliance zone",
+    "id": "auto_herding_spit_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Launch Wave"
+  },
+  {
+    "type": "counter",
+    "label": "Shoots fuel into the alliance zone",
+    "id": "auto_herding_launch_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Auto Climbing"
+  },
+  {
+    "type": "multiselect",
+    "label": "Auto Climb Level",
+    "options": [
+      "None",
+      "Level 1"
+    ],
+    "id": "auto_climb_level"
+  },
+  {
+    "type": "multiselect",
+    "label": "Auto Climb Position",
+    "options": [
+      "No Attempt",
+      "Left",
+      "Middle",
+      "Right",
+      "Back"
+    ],
+    "id": "auto_climb_pos"
+  },
+  {
+    "type": "checkbox",
+    "label": "Robot Breakdown? (Stopped for 5+ seconds or obvious damage affecting strategy)",
+    "id": "auto_breakdown"
+  },
+  {
+    "type": "textblock",
+    "label": "Breakdown Description (What happened? What broke?)",
+    "id": "auto_breakdown_des"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "header",
+    "label": "TELEOP"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Push Waves"
+  },
+  {
+    "type": "counter",
+    "label": "Bumper pushes fuel under trench or over bump",
+    "id": "tele_herding_push_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Spit Waves"
+  },
+  {
+    "type": "counter",
+    "label": "Fill hopper, and then dump into alliance zone",
+    "id": "tele_herding_spit_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Launch Waves"
+  },
+  {
+    "type": "counter",
+    "label": "Shoots fuel into the alliance zone",
+    "id": "tele_herding_launch_wave",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Volleys"
+  },
+  {
+    "type": "counter",
+    "label": "Volleys Attempted: A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
+    "id": "tele_volleys_attempted",
+    "allow_negative": false,
+    "variant": "standard"
+  },
+  {
+    "type": "multiselect",
+    "label": "Volley Quality",
+    "options": [
+      "Perfect: 95-100%",
+      "Above Average: 75-90%",
+      "Average: 50-75%",
+      "Below Average: Below 50%"
+    ],
+    "id": "tele_volley_quality"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Movement"
+  },
+  {
+    "type": "checkbox",
+    "label": "Crossed Bump?",
+    "id": "cross_bump_tele"
+  },
+  {
+    "type": "checkbox",
+    "label": "Crossed Trench?",
+    "id": "cross_trench_tele"
+  },
+  {
+    "type": "checkbox",
+    "label": "Was this robot defended?",
+    "id": "defended_time"
+  },
+  {
+    "type": "multiselect",
+    "label": "Primary Scoring Locations",
+    "options": [
+      "Outpost",
+      "Depot",
+      "3ft radius around hub",
+      "6ft radius around hub"
+    ],
+    "id": "scoring_locations"
+  },
+  {
+    "type": "multiselect",
+    "label": "Primary Feeding Locations",
+    "options": [
+      "In front of midline to alliance section",
+      "Behind midline to alliance section"
+    ],
+    "id": "feeding_locations"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "header",
+    "label": "ENDGAME & QUALITATIVE"
+  },
+  {
+    "type": "subheader",
+    "label": "Tele Climb"
+  },
+  {
+    "type": "multiselect",
+    "label": "Tele/Endgame Climb Level",
+    "options": [
+      "None",
+      "Level 1",
+      "Level 2",
+      "Level 3"
+    ],
+    "id": "tele_climb"
+  },
+  {
+    "type": "slider",
+    "label": "Climb Time (Seconds)",
+    "options": {
+      "min": 0,
+      "max": 30,
+      "step": 1
+    },
+    "id": "climb_time",
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Driving"
+  },
+  {
+    "type": "multiselect",
+    "label": "DriveBase Speed",
+    "options": [
+      "Low",
+      "High"
+    ],
+    "id": "drivebase_speed"
+  },
+  {
+    "type": "multiselect",
+    "label": "Driver Skill",
+    "options": [
+      "Poor",
+      "Average",
+      "Good"
+    ],
+    "id": "driver_skill"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "header",
+    "label": "METRICS"
+  },
+  {
+    "type": "multiselect",
+    "label": "Robot Performance Tier",
+    "options": [
+      "Elite",
+      "High",
+      "Medium",
+      "Low",
+      "None"
+    ],
+    "id": "robot_tier"
+  },
+  {
+    "type": "derived",
+    "id": "contributed_points",
+    "formula": "(tele_volleys_attempted * 10) + (auto_volleys_attempted * 10)"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "header",
+    "label": "PENALTIES & NOTES"
+  },
+  {
+    "type": "checkbox",
+    "label": "End Game Free Climb Penalty?",
+    "id": "free_climb_penalty"
+  },
+  {
+    "type": "checkbox",
+    "label": "Robot Breakdown? (Stopped for 5+ seconds or obvious damage affecting strategy)",
+    "id": "tele_breakdown"
+  },
+  {
+    "type": "textblock",
+    "label": "Breakdown Description (What happened? What broke?)",
+    "id": "tele_breakdown_des"
+  },
+  {
+    "type": "textblock",
+    "label": "Misc Notes (Did they have a preference regarding volley used? Anything interesting?)",
+    "id": "match_notes"
+  }
+]

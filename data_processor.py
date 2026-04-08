@@ -15,49 +15,49 @@ def process_match_data(csv_path, db_path):
         return
 
     # 2. Transform: Normalize Scoutradioz column names
-    # Scoutradioz exports team_key as "frcXXXX" — strip prefix and rename to teamNumber
-    if 'team_key' in df.columns and 'teamNumber' not in df.columns:
-        df['teamNumber'] = df['team_key'].str.replace('frc', '', regex=False).astype(int)
+    # Scoutradioz exports team_key as "frcXXXX" — strip prefix and rename to team_number
+    if 'team_key' in df.columns and 'team_number' not in df.columns:
+        df['team_number'] = df['team_key'].str.replace('frc', '', regex=False).astype(int)
 
-    # Scoutradioz exports match_number — rename to matchNumber if needed
-    if 'match_number' in df.columns and 'matchNumber' not in df.columns:
-        df = df.rename(columns={'match_number': 'matchNumber'})
+    # Scoutradioz exports match_number — rename to match_number if needed
+    if 'match_number' in df.columns and 'match_number' not in df.columns:
+        df = df.rename(columns={'match_number': 'match_number'})
 
     # 3. Transform: Proportional Score
     # Tier weights: Elite=4, High=3, Medium=2, Low=1, None=0
     TIER_WEIGHTS = {'Elite': 4, 'High': 3, 'Medium': 2, 'Low': 1, 'None': 0}
 
-    if 'robotTier' not in df.columns:
-        df['robotTier'] = 'None'
-    df['robotTier'] = df['robotTier'].fillna('None').astype(str).str.strip()
-    df['tier_weight'] = df['robotTier'].map(TIER_WEIGHTS).fillna(0)
+    if 'robot_tier' not in df.columns:
+        df['robot_tier'] = 'None'
+    df['robot_tier'] = df['robot_tier'].fillna('None').astype(str).str.strip()
+    df['tier_weight'] = df['robot_tier'].map(TIER_WEIGHTS).fillna(0)
 
     alliance_col = 'alliance' if 'alliance' in df.columns else None
 
-    if alliance_col and 'matchNumber' in df.columns:
-        # Use contributedPoints as alliance total — more accurate than fuel counts
+    if alliance_col and 'match_number' in df.columns:
+        # Use contributed_points as alliance total — more accurate than fuel counts
         # and works even when autoFuel/teleFuel aren't collected
-        df['_contrib'] = df['contributedPoints'].fillna(0) if 'contributedPoints' in df.columns else 0
+        df['_contrib'] = df['contributed_points'].fillna(0) if 'contributed_points' in df.columns else 0
 
         # Alliance total contributed points per match
-        alliance_totals = df.groupby(['matchNumber', alliance_col])['_contrib'].sum().reset_index()
-        alliance_totals = alliance_totals.rename(columns={'_contrib': 'allianceFuel'})
-        df = df.merge(alliance_totals, on=['matchNumber', alliance_col], how='left')
+        alliance_totals = df.groupby(['match_number', alliance_col])['_contrib'].sum().reset_index()
+        alliance_totals = alliance_totals.rename(columns={'_contrib': 'alliance_fuel'})
+        df = df.merge(alliance_totals, on=['match_number', alliance_col], how='left')
 
         # Alliance weight sum per match
-        alliance_weights = df.groupby(['matchNumber', alliance_col])['tier_weight'].sum().reset_index()
+        alliance_weights = df.groupby(['match_number', alliance_col])['tier_weight'].sum().reset_index()
         alliance_weights = alliance_weights.rename(columns={'tier_weight': 'alliance_weight_sum'})
-        df = df.merge(alliance_weights, on=['matchNumber', alliance_col], how='left')
+        df = df.merge(alliance_weights, on=['match_number', alliance_col], how='left')
 
-        # Proportional Score = allianceFuel × (robot_weight / alliance_weight_sum)
+        # Proportional Score = alliance_fuel × (robot_weight / alliance_weight_sum)
         df['proportional_score'] = df.apply(
             lambda row: round(
-                row['allianceFuel'] * (row['tier_weight'] / row['alliance_weight_sum']), 2
+                row['alliance_fuel'] * (row['tier_weight'] / row['alliance_weight_sum']), 2
             ) if row['alliance_weight_sum'] > 0 else 0.0,
             axis=1
         )
     else:
-        df['allianceFuel'] = 0
+        df['alliance_fuel'] = 0
         df['proportional_score'] = 0.0
 
     # Drop helper columns not in schema
@@ -105,6 +105,8 @@ def process_match_data(csv_path, db_path):
             cursor.execute("DROP TABLE IF EXISTS temp_match_data")
         conn.close()
 
+
+
 def process_pit_data(csv_path, db_path):
     """Reads a pit scouting CSV and loads it into the pit_data table."""
     print(f" Processing pit file: {csv_path}...")
@@ -114,6 +116,10 @@ def process_pit_data(csv_path, db_path):
     except FileNotFoundError:
         print(f"Error: Could not find {csv_path}. Please check the path.")
         return
+    
+    # Scoutradioz exports team_key as "frcXXXX" — strip prefix and rename to team_number
+    if 'team_key' in df.columns:
+        df['team_number'] = df['team_key'].str.replace('frc', '', regex=False).astype(int)
 
     conn = sqlite3.connect(db_path)
     cursor = None
@@ -153,11 +159,13 @@ if __name__ == "__main__":
     #project_root = Path(__file__).parent.parent
     #project_root = Path(r"C:\Users\regg0\Desktop\FRC Strat Folder")
     project_root = Path(__file__).resolve().parent
-    csv_file = project_root / 'data' / 'match_export.csv'
+    match_csv_file = project_root / 'data' / 'match_export.csv'
+    pit_csv_file = project_root / 'data' / 'pit_export.csv'
     database_file = project_root / 'database' / 'scouting_2026.db'
 
     (project_root / 'data').mkdir(parents=True, exist_ok=True)
     (project_root / 'database').mkdir(parents=True, exist_ok=True)
     
     # Run the engine
-    process_match_data(csv_file, database_file)
+    process_match_data(match_csv_file, database_file)
+    process_pit_data(pit_csv_file, database_file)

@@ -1,0 +1,237 @@
+[
+  {
+    "type": "header",
+    "label": "Pit Scouting"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "multiselect",
+    "label": "How many years has their driver been driving?",
+    "options": [
+      "Rookie",
+      "1 year expereince",
+      "2 years experience",
+      "3+ years experience"
+    ],
+    "id": "driver_exp"
+  },
+  {
+    "type": "multiselect",
+    "label": "Auto Start Preference",
+    "options": [
+      "Depot side (Left side)",
+      "In front of Hub (Middle)",
+      "Outpost Side (Right side)"
+    ],
+    "id": "auto_start_pref"
+  },
+  {
+    "type": "multiselect",
+    "label": "Driver Station Preference",
+    "options": [
+      "Depot side (Left side)",
+      "In front of Hub (Middle)",
+      "Outpost Side (Right side)",
+      "No preference"
+    ],
+    "id": "driver_station_pref"
+  },
+  {
+    "type": "textblock",
+    "label": "Robot's auto strategy (push/spit/launch waves, location of volleys, amount of volleys)",
+    "id": "auto_robo_strat"
+  },
+  {
+    "type": "textblock",
+    "label": "Robot's main strategy (What are doing during active shift? What about the inactive shift? Push/spit/launch waves, location of volleys, amount of volleys)",
+    "id": "robo_strat"
+  },
+  {
+    "type": "slider",
+    "label": "Auto score goal",
+    "options": {
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    "id": "robo_best_auto",
+    "variant": "standard"
+  },
+  {
+    "type": "subheader",
+    "label": "Robot Specifications"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "multiselect",
+    "label": "Drive Type:",
+    "options": [
+      "Swerve: Moves and turns freely 360 degrees",
+      "Tank: Moves forward and backward only",
+      "Mecanum: Strafes left and right (can move left and right without turning)"
+    ],
+    "id": "drivebase_type"
+  },
+  {
+    "type": "textblock",
+    "label": "Drive Type Notes",
+    "id": "drivebase_notes"
+  },
+  {
+    "type": "slider",
+    "label": "Robot Width",
+    "options": {
+      "min": 0,
+      "max": 40,
+      "step": 0.5
+    },
+    "id": "robot_width",
+    "variant": "standard"
+  },
+  {
+    "type": "slider",
+    "label": "Robot Length",
+    "options": {
+      "min": 0,
+      "max": 40,
+      "step": 0.5
+    },
+    "id": "robot_length",
+    "variant": "standard"
+  },
+  {
+    "type": "slider",
+    "label": "Robot Height",
+    "options": {
+      "min": 0,
+      "max": 30,
+      "step": 0.5
+    },
+    "id": "robot_height",
+    "variant": "standard"
+  },
+  {
+    "type": "checkbox",
+    "label": "Can they extend?",
+    "id": "extendable"
+  },
+  {
+    "type": "checkbox",
+    "label": "Can they extend in multiple directions?",
+    "id": "extend_multi_dir"
+  },
+  {
+    "type": "checkbox",
+    "label": "Do they use a turret to shoot?",
+    "id": "use_turret"
+  },
+  {
+    "type": "slider",
+    "label": "How many turrets do you have",
+    "options": {
+      "min": 0,
+      "max": 3,
+      "step": 1
+    },
+    "variant": "standard",
+    "id": "num_turrets"
+  },
+  {
+    "type": "slider",
+    "label": "How many shots can you make per volley?",
+    "options": {
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    "variant": "standard",
+    "id": "volley_amount"
+  },
+  {
+    "type": "slider",
+    "label": "How many balls do you hold in your hopper?",
+    "options": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "variant": "standard",
+    "id": "hopper_capacity"
+  },
+  {
+    "type": "checkbox",
+    "label": "Do they use vision to shoot?",
+    "id": "use_vision"
+  },
+  {
+    "type": "subheader",
+    "label": "Game Capabilities"
+  },
+  {
+    "type": "spacer"
+  },
+  {
+    "type": "checkbox",
+    "label": "Can they climb?",
+    "id": "climb_ability"
+  },
+  {
+    "type": "checkbox",
+    "label": "L1 Climb(auto)",
+    "id": "l1_auto"
+  },
+  {
+    "type": "checkbox",
+    "label": "L1 Climb",
+    "id": "l1_climb"
+  },
+  {
+    "type": "checkbox",
+    "label": "L2 Climb",
+    "id": "l2_climb"
+  },
+  {
+    "type": "checkbox",
+    "label": "L3 Climb",
+    "id": "l3_climb"
+  },
+  {
+    "type": "checkbox",
+    "label": "Intake from Ground?",
+    "id": "ground_intake"
+  },
+  {
+    "type": "checkbox",
+    "label": "Intake from Outpost?",
+    "id": "hp_intake"
+  },
+  {
+    "type": "checkbox",
+    "label": "Intake from Depot?",
+    "id": "depot_intake"
+  },
+  {
+    "type": "checkbox",
+    "label": "Can they move and shoot?",
+    "id": "move_shoot"
+  },
+  {
+    "type": "textblock",
+    "label": "Where can they shoot from?",
+    "id": "shoot_area"
+  },
+  {
+    "type": "textblock",
+    "label": "Briefly describe what the robot is doing: What's the goal of the robot? What is their role?",
+    "id": "robot_des"
+  },
+  {
+    "type": "textblock",
+    "label": "Extra notes?",
+    "id": "extra"
+  }
+]
