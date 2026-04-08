@@ -1,6 +1,13 @@
 import requests
+
+# Check if we are running on the Streamlit Cloud or locally where config.py exists
 import streamlit as st
-from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+try:
+    TBA_API_KEY = st.secrets["TBA_API_KEY"]
+    EVENT_KEY = st.secrets["EVENT_KEY"]
+    OUR_TEAM = st.secrets["OUR_TEAM"]
+except Exception:
+    from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
 
 BASE_URL = "https://www.thebluealliance.com/api/v3"
 HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}

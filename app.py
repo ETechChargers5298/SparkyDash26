@@ -2,13 +2,22 @@ import tempfile
 import numpy as np
 import pandas as pd
 import sqlite3 as sq
-import streamlit as st
 import plotly.express as px
 from pathlib import Path
 from data_processor import process_match_data, process_pit_data
 from TBA import get_our_matches, get_team_ranking, get_event_rankings, get_event_matches, parse_match, api_error_message, API_OK, API_NO_DATA, API_ERROR
-from config import OUR_TEAM, EVENT_KEY
 from statbotics import get_event_epas, get_team_epa
+
+# Check if we are running on the Streamlit Cloud or locally where config.py exists
+import streamlit as st
+try:
+    TBA_API_KEY = st.secrets["TBA_API_KEY"]
+    EVENT_KEY = st.secrets["EVENT_KEY"]
+    OUR_TEAM = st.secrets["OUR_TEAM"]
+except Exception:
+    from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+
+
 
 # --- CONFIG ---
 st.set_page_config(page_title="E-TECH CHARGERS SCOUTING DASHBOARD", layout="wide")
