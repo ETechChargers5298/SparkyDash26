@@ -7,9 +7,12 @@
     "type": "multiselect",
     "label": "Auto Start Position",
     "options": [
-      "Depot",
-      "Mid",
-      "Outpost"
+      "Other",
+      "Left Trench (near Depot)",
+      "Left Bump (across from Depot)",
+      "Hub (center)",
+      "Right Bump (near Outpost)",
+      "Right Trench (across from Outpost)"
     ],
     "id": "startPosition"
   },
@@ -33,7 +36,7 @@
   },
   {
     "type": "multiselect",
-    "label": "Auto Volley Quality",
+    "label": "Auto Volleys Quality",
     "options": [
       "Select One",
       "Perfect: 95-100%",
@@ -63,7 +66,7 @@
   },
   {
     "type": "counter",
-    "label": "Bumper pushes fuel under trench or over bump",
+    "label": "Bumper pushes at least 5 fuel under trench or over bump",
     "id": "autoHerdingPushWave",
     "allow_negative": false,
     "variant": "standard"
@@ -74,7 +77,7 @@
   },
   {
     "type": "counter",
-    "label": "Fill hopper, and then dump into alliance zone",
+    "label": "Fill hopper, and then dump at least 5 fuel into Alliance Zone",
     "id": "autoHerdingSpitWave",
     "allow_negative": false,
     "variant": "standard"
@@ -85,7 +88,7 @@
   },
   {
     "type": "counter",
-    "label": "Shoots fuel into the alliance zone",
+    "label": "Shoots at least 5 fuel from Neutral Zone into Alliance Zone",
     "id": "autoHerdingLaunchWave",
     "allow_negative": false,
     "variant": "standard"
@@ -138,7 +141,7 @@
   },
   {
     "type": "counter",
-    "label": "Bumper pushes fuel under trench or over bump",
+    "label": "Bumper pushes at least 5 fuel under trench or over bump",
     "id": "teleHerdingPushWave",
     "allow_negative": false,
     "variant": "standard"
@@ -149,7 +152,7 @@
   },
   {
     "type": "counter",
-    "label": "Fill hopper, and then dump into alliance zone",
+    "label": "Fill hopper, and then dump at least 5 fuel into Alliance Zone",
     "id": "teleHerdingSpitWave",
     "allow_negative": false,
     "variant": "standard"
@@ -160,7 +163,7 @@
   },
   {
     "type": "counter",
-    "label": "Shoots fuel into the alliance zone",
+    "label": "Shoots at least 5 fuel from Neutral Zone into Alliance Zone",
     "id": "teleHerdingLaunchWave",
     "allow_negative": false,
     "variant": "standard"
@@ -178,8 +181,9 @@
   },
   {
     "type": "multiselect",
-    "label": "Volley Quality",
+    "label": "Tele Volleys Quality",
     "options": [
+      "Did not Attempt",
       "Perfect: 95-100%",
       "Above Average: 75-90%",
       "Average: 50-75%",
@@ -210,6 +214,7 @@
     "type": "multiselect",
     "label": "Primary Scoring Locations",
     "options": [
+      "Did not Attempt to Score",
       "Close to Hub (within 6 feet)",
       "Far from Hub (past 6 feet)",
       "Trench-adjacent"
@@ -220,6 +225,7 @@
     "type": "multiselect",
     "label": "Primary Intake Locations",
     "options": [
+      "Did not attempt to Intake",
       "Primarily in Alliance Zone",
       "Primarily in Neutral Zone",
       "Heavy intake in both Alliance and Neutral Zone"
@@ -267,8 +273,8 @@
     "type": "multiselect",
     "label": "DriveBase Speed",
     "options": [
-      "Low",
       "Average",
+      "Low",
       "High"
     ],
     "id": "drivebaseSpeed"
@@ -277,8 +283,8 @@
     "type": "multiselect",
     "label": "Driver Skill",
     "options": [
-      "Poor",
       "Average",
+      "Poor",
       "Good"
     ],
     "id": "driverSkill"
@@ -294,11 +300,12 @@
     "type": "multiselect",
     "label": "Robot Performance Tier",
     "options": [
+      "Choose One",
       "Elite",
       "High",
       "Medium",
       "Low",
-      "None"
+      "IDK"
     ],
     "id": "robotTier"
   },
