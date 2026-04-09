@@ -11,7 +11,7 @@
       "Mid",
       "Outpost"
     ],
-    "id": "start_position"
+    "id": "startPosition"
   },
   {
     "type": "spacer"
@@ -27,7 +27,7 @@
   {
     "type": "counter",
     "label": "A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
-    "id": "auto_volleys_attempted",
+    "id": "autoVolleysAttempted",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -35,12 +35,13 @@
     "type": "multiselect",
     "label": "Auto Volley Quality",
     "options": [
+      "Select One",
       "Perfect: 95-100%",
       "Above Average: 75-90%",
       "Average: 50-75%",
       "Below Average: Well-below 50%"
     ],
-    "id": "auto_volley_quality"
+    "id": "autoVolleyQuality"
   },
   {
     "type": "subheader",
@@ -49,12 +50,12 @@
   {
     "type": "checkbox",
     "label": "Crossed Trench?",
-    "id": "cross_trench_auto"
+    "id": "crossTrenchAuto"
   },
   {
     "type": "checkbox",
     "label": "Crossed Bump?",
-    "id": "cross_bump_auto"
+    "id": "crossBumpAuto"
   },
   {
     "type": "subheader",
@@ -63,7 +64,7 @@
   {
     "type": "counter",
     "label": "Bumper pushes fuel under trench or over bump",
-    "id": "auto_herding_push_wave",
+    "id": "autoHerdingPushWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -74,7 +75,7 @@
   {
     "type": "counter",
     "label": "Fill hopper, and then dump into alliance zone",
-    "id": "auto_herding_spit_wave",
+    "id": "autoHerdingSpitWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -85,7 +86,7 @@
   {
     "type": "counter",
     "label": "Shoots fuel into the alliance zone",
-    "id": "auto_herding_launch_wave",
+    "id": "autoHerdingLaunchWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -100,7 +101,7 @@
       "None",
       "Level 1"
     ],
-    "id": "auto_climb_level"
+    "id": "autoClimbLevel"
   },
   {
     "type": "multiselect",
@@ -112,17 +113,17 @@
       "Right",
       "Back"
     ],
-    "id": "auto_climb_pos"
+    "id": "autoClimbPos"
   },
   {
     "type": "checkbox",
     "label": "Robot Breakdown? (Stopped for 5+ seconds or obvious damage affecting strategy)",
-    "id": "auto_breakdown"
+    "id": "autoBreakdown"
   },
   {
     "type": "textblock",
     "label": "Breakdown Description (What happened? What broke?)",
-    "id": "auto_breakdown_des"
+    "id": "autoBreakdownDes"
   },
   {
     "type": "spacer"
@@ -138,7 +139,7 @@
   {
     "type": "counter",
     "label": "Bumper pushes fuel under trench or over bump",
-    "id": "tele_herding_push_wave",
+    "id": "teleHerdingPushWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -149,7 +150,7 @@
   {
     "type": "counter",
     "label": "Fill hopper, and then dump into alliance zone",
-    "id": "tele_herding_spit_wave",
+    "id": "teleHerdingSpitWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -160,7 +161,7 @@
   {
     "type": "counter",
     "label": "Shoots fuel into the alliance zone",
-    "id": "tele_herding_launch_wave",
+    "id": "teleHerdingLaunchWave",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -171,7 +172,7 @@
   {
     "type": "counter",
     "label": "Volleys Attempted: A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
-    "id": "tele_volleys_attempted",
+    "id": "teleVolleysAttempted",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -184,7 +185,7 @@
       "Average: 50-75%",
       "Below Average: Below 50%"
     ],
-    "id": "tele_volley_quality"
+    "id": "teleVolleyQuality"
   },
   {
     "type": "subheader",
@@ -193,37 +194,37 @@
   {
     "type": "checkbox",
     "label": "Crossed Bump?",
-    "id": "cross_bump_tele"
+    "id": "crossBumpTele"
   },
   {
     "type": "checkbox",
     "label": "Crossed Trench?",
-    "id": "cross_trench_tele"
+    "id": "crossTrenchTele"
   },
   {
     "type": "checkbox",
     "label": "Was this robot defended?",
-    "id": "defended_time"
+    "id": "defendedTime"
   },
   {
     "type": "multiselect",
     "label": "Primary Scoring Locations",
     "options": [
-      "Outpost",
-      "Depot",
-      "3ft radius around hub",
-      "6ft radius around hub"
+      "Close to Hub (within 6 feet)",
+      "Far from Hub (past 6 feet)",
+      "Trench-adjacent"
     ],
     "id": "scoring_locations"
   },
   {
     "type": "multiselect",
-    "label": "Primary Feeding Locations",
+    "label": "Primary Intake Locations",
     "options": [
-      "In front of midline to alliance section",
-      "Behind midline to alliance section"
+      "Primarily in Alliance Zone",
+      "Primarily in Neutral Zone",
+      "Heavy intake in both Alliance and Neutral Zone"
     ],
-    "id": "feeding_locations"
+    "id": "feedingLocations"
   },
   {
     "type": "spacer"
@@ -245,7 +246,7 @@
       "Level 2",
       "Level 3"
     ],
-    "id": "tele_climb"
+    "id": "teleClimb"
   },
   {
     "type": "slider",
@@ -255,7 +256,7 @@
       "max": 30,
       "step": 1
     },
-    "id": "climb_time",
+    "id": "climbTime",
     "variant": "standard"
   },
   {
@@ -267,9 +268,10 @@
     "label": "DriveBase Speed",
     "options": [
       "Low",
+      "Average",
       "High"
     ],
-    "id": "drivebase_speed"
+    "id": "drivebaseSpeed"
   },
   {
     "type": "multiselect",
@@ -279,7 +281,7 @@
       "Average",
       "Good"
     ],
-    "id": "driver_skill"
+    "id": "driverSkill"
   },
   {
     "type": "spacer"
@@ -298,12 +300,12 @@
       "Low",
       "None"
     ],
-    "id": "robot_tier"
+    "id": "robotTier"
   },
   {
     "type": "derived",
-    "id": "contributed_points",
-    "formula": "(tele_volleys_attempted * 10) + (auto_volleys_attempted * 10)"
+    "id": "contributedPoints",
+    "formula": "(teleVolleysAttempted * 10) + (autoVolleysAttempted * 10)"
   },
   {
     "type": "spacer"
@@ -315,21 +317,21 @@
   {
     "type": "checkbox",
     "label": "End Game Free Climb Penalty?",
-    "id": "free_climb_penalty"
+    "id": "freeClimbPenalty"
   },
   {
     "type": "checkbox",
     "label": "Robot Breakdown? (Stopped for 5+ seconds or obvious damage affecting strategy)",
-    "id": "tele_breakdown"
+    "id": "teleBreakdown"
   },
   {
     "type": "textblock",
     "label": "Breakdown Description (What happened? What broke?)",
-    "id": "tele_breakdown_des"
+    "id": "teleBreakdownDes"
   },
   {
     "type": "textblock",
     "label": "Misc Notes (Did they have a preference regarding volley used? Anything interesting?)",
-    "id": "match_notes"
+    "id": "matchNotes"
   }
 ]

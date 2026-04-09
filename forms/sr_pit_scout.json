@@ -15,7 +15,7 @@
       "2 years experience",
       "3+ years experience"
     ],
-    "id": "driver_exp"
+    "id": "driverExp"
   },
   {
     "type": "multiselect",
@@ -25,7 +25,7 @@
       "In front of Hub (Middle)",
       "Outpost Side (Right side)"
     ],
-    "id": "auto_start_pref"
+    "id": "autoStartPref"
   },
   {
     "type": "multiselect",
@@ -36,17 +36,17 @@
       "Outpost Side (Right side)",
       "No preference"
     ],
-    "id": "driver_station_pref"
+    "id": "driverStationPref"
   },
   {
     "type": "textblock",
     "label": "Robot's auto strategy (push/spit/launch waves, location of volleys, amount of volleys)",
-    "id": "auto_robo_strat"
+    "id": "autoRoboStrat"
   },
   {
     "type": "textblock",
     "label": "Robot's main strategy (What are doing during active shift? What about the inactive shift? Push/spit/launch waves, location of volleys, amount of volleys)",
-    "id": "robo_strat"
+    "id": "roboStrat"
   },
   {
     "type": "slider",
@@ -56,7 +56,7 @@
       "max": 50,
       "step": 1
     },
-    "id": "robo_best_auto",
+    "id": "roboBestAuto",
     "variant": "standard"
   },
   {
@@ -74,12 +74,12 @@
       "Tank: Moves forward and backward only",
       "Mecanum: Strafes left and right (can move left and right without turning)"
     ],
-    "id": "drivebase_type"
+    "id": "drivebaseType"
   },
   {
     "type": "textblock",
     "label": "Drive Type Notes",
-    "id": "drivebase_notes"
+    "id": "drivebaseNotes"
   },
   {
     "type": "slider",
@@ -89,7 +89,7 @@
       "max": 40,
       "step": 0.5
     },
-    "id": "robot_width",
+    "id": "robotWidth",
     "variant": "standard"
   },
   {
@@ -100,7 +100,7 @@
       "max": 40,
       "step": 0.5
     },
-    "id": "robot_length",
+    "id": "robotLength",
     "variant": "standard"
   },
   {
@@ -111,7 +111,7 @@
       "max": 30,
       "step": 0.5
     },
-    "id": "robot_height",
+    "id": "robotHeight",
     "variant": "standard"
   },
   {
@@ -122,12 +122,12 @@
   {
     "type": "checkbox",
     "label": "Can they extend in multiple directions?",
-    "id": "extend_multi_dir"
+    "id": "extendMultiDir"
   },
   {
     "type": "checkbox",
     "label": "Do they use a turret to shoot?",
-    "id": "use_turret"
+    "id": "useTurret"
   },
   {
     "type": "slider",
@@ -138,34 +138,34 @@
       "step": 1
     },
     "variant": "standard",
-    "id": "num_turrets"
+    "id": "numTurrets"
   },
   {
     "type": "slider",
-    "label": "How many shots can you make per volley?",
+    "label": "How many shots can you make (on average) per volley?",
     "options": {
       "min": 0,
       "max": 50,
       "step": 1
     },
     "variant": "standard",
-    "id": "volley_amount"
+    "id": "volleyAmount"
   },
   {
     "type": "slider",
-    "label": "How many balls do you hold in your hopper?",
+    "label": "How many fuel do you typically hold in your hopper?",
     "options": {
       "min": 0,
       "max": 100,
       "step": 1
     },
     "variant": "standard",
-    "id": "hopper_capacity"
+    "id": "hopperCapacity"
   },
   {
     "type": "checkbox",
     "label": "Do they use vision to shoot?",
-    "id": "use_vision"
+    "id": "useVision"
   },
   {
     "type": "subheader",
@@ -177,61 +177,61 @@
   {
     "type": "checkbox",
     "label": "Can they climb?",
-    "id": "climb_ability"
+    "id": "climbAbility"
   },
   {
     "type": "checkbox",
     "label": "L1 Climb(auto)",
-    "id": "l1_auto"
+    "id": "l1Auto"
   },
   {
     "type": "checkbox",
     "label": "L1 Climb",
-    "id": "l1_climb"
+    "id": "l1Climb"
   },
   {
     "type": "checkbox",
     "label": "L2 Climb",
-    "id": "l2_climb"
+    "id": "l2Climb"
   },
   {
     "type": "checkbox",
     "label": "L3 Climb",
-    "id": "l3_climb"
+    "id": "l3Climb"
   },
   {
     "type": "checkbox",
     "label": "Intake from Ground?",
-    "id": "ground_intake"
+    "id": "groundIntake"
   },
   {
     "type": "checkbox",
     "label": "Intake from Outpost?",
-    "id": "hp_intake"
+    "id": "hpIntake"
   },
   {
     "type": "checkbox",
     "label": "Intake from Depot?",
-    "id": "depot_intake"
+    "id": "depotIntake"
   },
   {
     "type": "checkbox",
     "label": "Can they move and shoot?",
-    "id": "move_shoot"
+    "id": "moveShoot"
   },
   {
     "type": "textblock",
     "label": "Where can they shoot from?",
-    "id": "shoot_area"
+    "id": "shootArea"
   },
   {
     "type": "textblock",
     "label": "Briefly describe what the robot is doing: What's the goal of the robot? What is their role?",
-    "id": "robot_des"
+    "id": "robotDes"
   },
   {
     "type": "textblock",
     "label": "Extra Pit Scout notes?",
-    "id": "pit_notes"
+    "id": "pitNotes"
   }
 ]
