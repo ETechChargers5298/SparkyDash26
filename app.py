@@ -52,11 +52,11 @@ def load_team_averages():
             END
         ), 3)                                           AS auto_volley_quality_score,
 
-        AVG(tele_volleys_attempted)                           AS avg_tele_volleys_attempted,
+        AVG(volleys_attempted)                                AS avg_volleys_attempted,
 
         -- Tele Volley Quality Score
         ROUND(AVG(
-            CASE tele_volley_quality
+            CASE volley_quality
                 WHEN 'Perfect'       THEN 1.000
                 WHEN 'Above Average' THEN 0.750
                 WHEN 'Average'       THEN 0.500
@@ -65,10 +65,10 @@ def load_team_averages():
             END
         ), 3)                                           AS tele_volley_quality_score,
 
-        -- Shift Efficiency: avg tele volleys attempted per active shift
+        -- Shift Efficiency: avg volleys attempted per active shift
         -- Each match has 4 active shifts (25 seconds each) for each alliance
         ROUND(
-            AVG(tele_volleys_attempted) * 1.0 / 4.0, 3
+            AVG(volleys_attempted) * 1.0 / 4.0, 3
         )                                               AS shift_efficiency,
 
         -- Climb reliability
@@ -95,13 +95,13 @@ def load_team_averages():
         df['_cp'] = df['avg_contributed_points'].fillna(0.0)
         df['_cp_sq'] = (df['_cp'] ** 2)
         # Use sample variance across matches approximated from avg
-        df['tele_fuel_stddev'] = df['_cp'] * 0.3  # rough approximation
+        df['cp_stddev'] = df['_cp'] * 0.3  # consistency approximation from avg contributed points
         df = df.drop(columns=['_cp', '_cp_sq'], errors='ignore')
 
         # Fill remaining nulls
         for col in ['avg_contributed_points', 'shift_efficiency', 'tele_volley_quality_score',
                     'auto_volley_quality_score', 'climb_reliability',
-                    'avg_tele_volleys_attempted', 'avg_auto_volleys_attempted']:
+                    'avg_volleys_attempted', 'avg_auto_volleys_attempted']:
             df[col] = df[col].fillna(0.0)
 
         # Merge Statbotics EPA
@@ -117,7 +117,7 @@ def load_team_averages():
             return (series - mn) / (mx - mn) if mx != mn else pd.Series([0.5]*len(series), index=series.index)
 
         # Volley success rate used if data available, else fall back to FER
-        tele_volley_data_available = df['avg_tele_volleys_attempted'].sum() > 0
+        tele_volley_data_available = df['avg_volleys_attempted'].sum() > 0
         auto_volley_data_available = df['avg_auto_volleys_attempted'].sum() > 0
         tele_scoring = norm(df['tele_volley_quality_score']) if tele_volley_data_available else norm(df['shift_efficiency'])
         auto_scoring = norm(df['auto_volley_quality_score']) if auto_volley_data_available else norm(df['shift_efficiency'])
@@ -155,9 +155,12 @@ def load_team_trend(team_number):
     query = """
     SELECT
         match_number, contributed_points,
+        auto_herding_push_wave, auto_herding_spit_wave, auto_herding_launch_wave,
         auto_volleys_attempted, auto_volley_quality,
-        tele_volleys_attempted, tele_volley_quality,
+        tele_herding_push_wave, tele_herding_spit_wave, tele_herding_launch_wave,
+        volleys_attempted, volley_quality,
         defended_time, tele_climb, climb_time,
+        auto_break_down, auto_break_down_des, tele_break_down, tele_break_down_des,
         start_position, match_notes
     FROM match_data
     WHERE team_number = ?
@@ -172,7 +175,7 @@ def load_team_trend(team_number):
 def load_all_team_trends():
     """Loads per-match contributed_points for ALL teams for momentum calculation."""
     query = """
-    SELECT team_number, match_number, contributed_points, tele_fuel
+    SELECT team_number, match_number, contributed_points
     FROM match_data
     WHERE team_number IS NOT NULL
     ORDER BY team_number, match_number ASC
@@ -191,7 +194,6 @@ def load_prematch_teams(teams):
         m.team_number,
         COUNT(m.match_number)                        AS matches_played,
         AVG(m.contributed_points)                    AS avg_contributed_points,
-        AVG(m.auto_volleys_attempted + m.tele_volleys_attempted)                AS avg_total_fuel,
         ROUND(AVG(CAST(m.defended_time AS REAL)), 3) AS defended_pct,
         ROUND(AVG(
             CASE m.auto_volley_quality
@@ -203,7 +205,7 @@ def load_prematch_teams(teams):
             END
         ), 3)                                       AS auto_volley_quality_score,
         ROUND(AVG(
-            CASE m.tele_volley_quality
+            CASE m.volley_quality
                 WHEN 'Perfect'       THEN 1.000
                 WHEN 'Above Average' THEN 0.750
                 WHEN 'Average'       THEN 0.500
@@ -211,11 +213,13 @@ def load_prematch_teams(teams):
                 ELSE                      0.500
             END
         ), 3)                                       AS tele_volley_quality_score,
+        AVG(m.volleys_attempted)                     AS avg_volleys_attempted,
         ROUND(
             SUM(CASE WHEN m.tele_climb != 'None' AND m.tele_climb != 'N/A' AND m.tele_climb != '' THEN 1 ELSE 0 END)
             * 1.0 / COUNT(m.match_number), 3
         )                                           AS climb_reliability,
-        p.drivebase_type, p.auto_start_pref, p.robo_strat, p.climb_ability
+        p.auto_pref, p.robo_strat, p.drive_base_type, p.can_climb,
+        p.l1_climb, p.l2_climb, p.l3_climb, p.hopper_capacity, p.use_turret, p.use_vision
     FROM match_data m
     LEFT JOIN pit_data p ON m.team_number = p.team_number
     WHERE m.team_number IN ({placeholders})
@@ -239,11 +243,11 @@ def load_auto_position_breakdown(team_number):
     query = """
     SELECT  start_position, 
             COUNT(match_number) AS matches,
-            AVG(auto_volleys_attempted) AS avg_auto_volleys_attempted
+            AVG(auto_volleys_attempted) AS avg_auto_volleys
     FROM match_data
     WHERE team_number = ?
     GROUP BY start_position
-    ORDER BY avg_auto_volleys_attempted DESC
+    ORDER BY avg_auto_volleys DESC
     """
     conn = sq.connect(DB_PATH)
     df = pd.read_sql_query(query, conn, params=(team_number,))
@@ -257,7 +261,7 @@ def calculate_momentum(df_trend):
     if len(df_trend) < 2:
         return 0.0
     x = np.arange(len(df_trend))
-    col = 'contributed_points' if 'contributed_points' in df_trend.columns else 'tele_fuel'
+    col = 'contributed_points'
     y = df_trend[col].fillna(0).values
     slope = np.polyfit(x, y, 1)[0]
     return round(slope, 4)
@@ -352,13 +356,13 @@ if page == "Picklist":
             df['momentum_slope'] = df['team_number'].map(momentum_map).fillna(0.0)
 
             # Consistency score
-            if 'tele_fuel_stddev' in df.columns and df['tele_fuel_stddev'].max() > 0:
-                df['consistency_score'] = 1 - norm_col(df['tele_fuel_stddev'])
+            if 'cp_stddev' in df.columns and df['cp_stddev'].max() > 0:
+                df['consistency_score'] = 1 - norm_col(df['cp_stddev'])
             else:
                 df['consistency_score'] = 0.5
 
             # Normalize and score
-            tele_volley_data = df['avg_tele_volleys_attempted'].sum() > 0
+            tele_volley_data = df['avg_volleys_attempted'].sum() > 0
             epa_data    = df['epa_total'].sum() > 0
 
             for col in ['avg_proportional_score', 'avg_contributed_points',
@@ -367,7 +371,7 @@ if page == "Picklist":
                 df[f'{col}_norm'] = norm_col(df[col].fillna(0))
 
             # Fallbacks when data not yet available
-            tele_volley_data      = df['avg_tele_volleys_attempted'].sum() > 0
+            tele_volley_data      = df['avg_volleys_attempted'].sum() > 0
             auto_volley_data = df['avg_auto_volleys_attempted'].sum() > 0
             tele_volley_norm      = df['tele_volley_quality_score_norm'] if tele_volley_data else df['shift_efficiency_norm']
             auto_volley_norm = df['auto_volley_quality_score_norm'] if auto_volley_data else df['shift_efficiency_norm']
@@ -392,7 +396,7 @@ if page == "Picklist":
                 'team_number', 'tier', 'matches_played',
                 'avg_proportional_score', 'avg_contributed_points', 'shift_efficiency',
                 'avg_auto_volleys_attempted', 'auto_volley_quality_score',
-                'avg_tele_volleys_attempted', 'tele_volley_quality_score',
+                'avg_volleys_attempted', 'tele_volley_quality_score',
                 'climb_reliability', 'epa_total', 'score'
             ]].copy()
 
@@ -407,8 +411,8 @@ if page == "Picklist":
                 'shift_efficiency':         'Shift Eff.',
                 'avg_auto_volleys_attempted': 'Auto Volleys',
                 'auto_volley_quality_score':  'Auto Volley Q.',
-                'avg_tele_volleys_attempted':    'Tele Volleys',
-                'tele_volley_quality_score':     'Tele Volley Q.',
+                'avg_volleys_attempted':          'Tele Volleys',
+                'tele_volley_quality_score':      'Tele Volley Q.',
                 'climb_reliability':        'Climb %',
                 'epa_total':                'EPA',
                 'score':                    'Weighted Score'
@@ -431,8 +435,7 @@ if page == "Picklist":
                 .format({
                     'Prop. Score':  '{:.1f}',
                     'Avg Pts':      '{:.1f}',
-                    'FER':          '{:.3f}',
-                    'Volleys':      '{:.1f}',
+                    'Shift Eff.':   '{:.3f}',
                     'Auto Volley Q.': '{:.0%}',
                     'Tele Volley Q.': '{:.0%}',
                     'Climb %':      '{:.0%}',
@@ -489,10 +492,10 @@ elif page == "Pre-Match Predictor":
                 df['epa_total'] = 0.0
 
             # Fill nulls from LEFT JOIN
-            df['auto_start_pref']      = df['auto_start_pref'].fillna('No pit data')
-            df['robo_strat']      = df['robo_strat'].fillna('No pit data')
+            df['auto_pref']    = df['auto_pref'].fillna('No pit data')
+            df['robo_strat']   = df['robo_strat'].fillna('No pit data')
             df['climb_reliability']  = df['climb_reliability'].fillna(0.0)
-            df['tele_volley_quality_score']= df['tele_volley_quality_score'].fillna(0.0)
+            df['tele_volley_quality_score'] = df['tele_volley_quality_score'].fillna(0.0)
             df['tier']               = df['tier'].fillna('No data')
             df['epa_total']          = df['epa_total'].fillna(0.0)
 
@@ -503,7 +506,7 @@ elif page == "Pre-Match Predictor":
                     'Alliance', 'team_number', 'tier', 'matches_played',
                     'avg_contributed_points', 'tele_volley_quality_score',
                     'climb_reliability', 'epa_total',
-                    'auto_start_pref', 'robo_strat'
+                    'auto_pref', 'robo_strat'
                 ]].rename(columns={
                     'team_number':              'Team',
                     'tier':                     'Tier',
@@ -512,8 +515,8 @@ elif page == "Pre-Match Predictor":
                     'tele_volley_quality_score':     'Volley Quality',
                     'climb_reliability':        'Climb %',
                     'epa_total':                'EPA',
-                    'auto_start_pref':          'Auto Start Pref',
-                    'robo_strat':           'Strategy'
+                    'auto_pref':                'Auto Start Pref',
+                    'robo_strat':               'Strategy'
                 }).style.format({
                     'Avg Pts':   '{:.1f}',
                     'Auto Volley Q.': '{:.0%}',
@@ -536,15 +539,15 @@ elif page == "Pre-Match Predictor":
             # Auto path conflict check
             st.markdown("---")
             st.subheader("🗺️ Auto Path Conflict Check")
-            red_df  = df[df['Alliance'] == '🔴 Red'][['team_number', 'auto_start_pref']]
-            blue_df = df[df['Alliance'] == '🔵 Blue'][['team_number', 'auto_start_pref']]
+            red_df  = df[df['Alliance'] == '🔴 Red'][['team_number', 'auto_pref']]
+            blue_df = df[df['Alliance'] == '🔵 Blue'][['team_number', 'auto_pref']]
             col_r, col_b = st.columns(2)
             with col_r:
                 st.markdown("**🔴 Red Auto Starts**")
-                st.dataframe(red_df.rename(columns={'team_number': 'Team', 'auto_start_pref': 'Preferred Start'}), use_container_width=True)
+                st.dataframe(red_df.rename(columns={'team_number': 'Team', 'auto_pref': 'Preferred Start'}), use_container_width=True)
             with col_b:
                 st.markdown("**🔵 Blue Auto Starts**")
-                st.dataframe(blue_df.rename(columns={'team_number': 'Team', 'auto_start_pref': 'Preferred Start'}), use_container_width=True)
+                st.dataframe(blue_df.rename(columns={'team_number': 'Team', 'auto_pref': 'Preferred Start'}), use_container_width=True)
 
 # =============================================================================
 # PAGE: TEAM DEEP-DIVE
@@ -593,14 +596,14 @@ elif page == "Team Deep-Dive":
         m3.metric("Avg Contributed Pts",f"{summary.get('avg_contributed_points', 0):.1f}")
         m4.metric("Shift Efficiency",   f"{summary.get('shift_efficiency', 0):.3f}")
         m5.metric("Auto Volley Q.",     f"{summary.get('auto_volley_quality_score', 0):.0%}" if summary.get('avg_auto_volleys_attempted', 0) > 0 else "No data")
-        m6.metric("Tele Volley Q.",     f"{summary.get('tele_volley_quality_score', 0):.0%}" if summary.get('avg_tele_volleys_attempted', 0) > 0 else "No data")
+        m6.metric("Tele Volley Q.",     f"{summary.get('tele_volley_quality_score', 0):.0%}" if summary.get('avg_volleys_attempted', 0) > 0 else "No data")
         m7.metric("Climb Reliability",  f"{summary.get('climb_reliability', 0):.0%}")
         m8.metric("EPA (Statbotics)",   f"{epa:.1f}" if epa > 0 else "N/A")
 
         # --- Trend Chart ---
         st.markdown("---")
         st.subheader("📈 Performance Trend")
-        chart_mode = st.radio("Chart Mode", ["Contributed Points", "Fuel (Auto vs Tele)", "Volleys"], horizontal=True)
+        chart_mode = st.radio("Chart Mode", ["Contributed Points", "Volleys", "Herding Waves"], horizontal=True)
 
         if not df_trend.empty:
             fig_df = df_trend.copy()
@@ -617,26 +620,35 @@ elif page == "Team Deep-Dive":
                     fig.add_scatter(x=fig_df['match_number'], y=y_fit, mode='lines',
                                     name='Trend', line=dict(dash='dash', color='orange'))
 
-            elif chart_mode == "Fuel Volleys (Auto vs Tele)":
-                melted = fig_df.melt(id_vars='match_number', value_vars=['auto_volleys_attempted', 'tele_volleys_attempted'],
-                                     var_name='Phase', value_name='Volleys')
-                fig = px.line(melted, x='match_number', y='Volleys', color='Phase', markers=True,
-                              title=f"Team {selected_team} — Volleys by Phase",
-                              labels={'match_number': 'Match'})
-
-            else:  # Tele Volleys
-                if 'tele_volleys_attempted' in fig_df.columns and fig_df['tele_volleys_attempted'].sum() > 0:
-                    fig = px.bar(fig_df, x='match_number', y='tele_volleys_attempted',
-                                 title=f"Team {selected_team} — Tele Volleys Attempted per Match",
-                                 labels={'match_number': 'Match', 'tele_volleys_attempted': 'Volleys'})
-                    # Overlay quality as color
-                    if 'tele_volley_quality' in fig_df.columns:
-                        fig = px.bar(fig_df, x='match_number', y='tele_volleys_attempted', color='tele_volley_quality',
-                                     color_discrete_map={'Perfect': '#8e44ad', 'Above Average': '#2ecc71', 'Average': '#f39c12', 'Below Average': '#e74c3c'},
-                                     title=f"Team {selected_team} — Tele Volleys by Quality",
-                                     labels={'match_number': 'Match', 'tele_volleys_attempted': 'Volleys', 'tele_volley_quality': 'Quality'})
+            elif chart_mode == "Herding Waves":
+                herding_cols = [
+                    'auto_herding_push_wave', 'auto_herding_spit_wave', 'auto_herding_launch_wave',
+                    'tele_herding_push_wave', 'tele_herding_spit_wave', 'tele_herding_launch_wave'
+                ]
+                herding_present = [c for c in herding_cols if c in fig_df.columns and fig_df[c].sum() > 0]
+                if herding_present:
+                    melted = fig_df.melt(id_vars='match_number', value_vars=herding_present,
+                                         var_name='Wave Type', value_name='Count')
+                    fig = px.bar(melted, x='match_number', y='Count', color='Wave Type', barmode='stack',
+                                 title=f"Team {selected_team} — Herding Waves per Match",
+                                 labels={'match_number': 'Match', 'Count': 'Waves'})
                 else:
-                    st.info("No Tele Volley data collected yet for this team.")
+                    st.info("No herding wave data collected yet for this team.")
+                    fig = None
+
+            else:  # Volleys
+                if 'volleys_attempted' in fig_df.columns and fig_df['volleys_attempted'].sum() > 0:
+                    if 'volley_quality' in fig_df.columns:
+                        fig = px.bar(fig_df, x='match_number', y='volleys_attempted', color='volley_quality',
+                                     color_discrete_map={'Perfect': '#8e44ad', 'Above Average': '#2ecc71', 'Average': '#f39c12', 'Below Average': '#e74c3c'},
+                                     title=f"Team {selected_team} — Volleys by Quality",
+                                     labels={'match_number': 'Match', 'volleys_attempted': 'Volleys', 'volley_quality': 'Quality'})
+                    else:
+                        fig = px.bar(fig_df, x='match_number', y='volleys_attempted',
+                                     title=f"Team {selected_team} — Volleys Attempted per Match",
+                                     labels={'match_number': 'Match', 'volleys_attempted': 'Volleys'})
+                else:
+                    st.info("No volley data collected yet for this team.")
                     fig = None
 
             if fig:
@@ -663,13 +675,13 @@ elif page == "Team Deep-Dive":
         st.markdown("---")
         st.subheader("🗺️ Auto Performance by Start Position")
         if not df_auto_pos.empty:
-            df_auto_pos['avg_auto_volleys_attempted'] = df_auto_pos['avg_auto_volleys_attempted'].fillna(0.0)
+            df_auto_pos['avg_auto_volleys'] = df_auto_pos['avg_auto_volleys'].fillna(0.0)
             st.dataframe(
                 df_auto_pos.rename(columns={
-                    'start_position': 'Start Position',
-                    'matches':       'Matches',
-                    'avg_auto_volleys_attempted': 'Avg Auto Fuel Volleys Attempted'
-                }).style.format({'Avg Auto Fuel Volleys': '{:.1f}'}),
+                    'start_position':  'Start Position',
+                    'matches':         'Matches',
+                    'avg_auto_volleys': 'Avg Auto Volleys'
+                }).style.format({'Avg Auto Volleys': '{:.1f}'}),
                 use_container_width=True
             )
         else:
@@ -683,25 +695,41 @@ elif page == "Team Deep-Dive":
             p1, p2, p3 = st.columns(3)
             with p1:
                 st.markdown("**Robot**")
-                st.write(f"DriveBase: {pit.get('drivebase_type', 'N/A')}")
-                st.write(f"Dimensions: {pit.get('robot_width', '?')}\" W × {pit.get('robot_length', '?')}\" L × {pit.get('robot_height', '?')}\" H")
-                st.write(f"Extends Frame: {pit.get('extends_frame', 'N/A')} ({pit.get('extension_dir', 'N/A')})")
-                st.write(f"Can Retract: {pit.get('can_retract', 'N/A')}")
+                st.write(f"Drive Base: {pit.get('drive_base_type', 'N/A')}")
+                st.write(f"Dimensions: {pit.get('robot_width', '?')}" W × {pit.get('robot_length', '?')}" L × {pit.get('robot_height', '?')}" H")
+                st.write(f"Extends: {'Yes' if pit.get('extendable') else 'No'} | Multi-Dir: {'Yes' if pit.get('extend_multi_dir') else 'No'}")
+                st.write(f"Turret: {'Yes' if pit.get('use_turret') else 'No'} ({pit.get('num_turrets', 0)} turrets)")
+                st.write(f"Vision: {'Yes' if pit.get('use_vision') else 'No'}")
+                st.write(f"Hopper Capacity: {pit.get('hopper_capacity', 'N/A')} balls")
+                st.write(f"Shots/Volley: {pit.get('volley_amount', 'N/A')}")
             with p2:
                 st.markdown("**Strategy**")
                 st.write(f"Driver Experience: {pit.get('driver_exp', 'N/A')}")
-                st.write(f"Auto Start Pref: {pit.get('auto_start_pref', 'N/A')}")
-                st.write(f"Driver Station Pref: {pit.get('driver_station_pref', 'N/A')}")
-                st.write(f"Strategy: {pit.get('robo_strat', 'N/A')}")
-                st.write(f"Best Auto: {pit.get('best_auto_des', 'N/A')}")
+                st.write(f"Auto Start Pref: {pit.get('auto_pref', 'N/A')}")
+                st.write(f"Driver Station Pref: {pit.get('driver_pref', 'N/A')}")
+                st.write(f"Auto Strategy: {pit.get('auto_robo_strat', 'N/A')}")
+                st.write(f"Main Strategy: {pit.get('robo_strat', 'N/A')}")
+                st.write(f"Auto Score Goal: {pit.get('robo_best_auto', 'N/A')} pts")
             with p3:
                 st.markdown("**Capabilities**")
-                st.write(f"Climb Ability: {pit.get('climb_ability', 'N/A')}")
-                st.write(f"Intake Source: {pit.get('intake_source', 'N/A')}")
-                st.write(f"Shot Mobility: {pit.get('shot_mobility', 'N/A')}")
-                st.write(f"Shot Range: {pit.get('shot_range', 'N/A')}")
-            st.markdown("**Notes**")
-            st.info(pit.get('pit_notes', 'No notes recorded.'))
+                climb_levels = []
+                if pit.get('l1_climb'): climb_levels.append('L1')
+                if pit.get('l2_climb'): climb_levels.append('L2')
+                if pit.get('l3_climb'): climb_levels.append('L3')
+                if pit.get('l1_auto'):  climb_levels.append('L1 Auto')
+                st.write(f"Climb: {', '.join(climb_levels) if climb_levels else 'None'}")
+                intakes = []
+                if pit.get('ground_intake'): intakes.append('Ground')
+                if pit.get('hp_intake'):     intakes.append('Outpost')
+                if pit.get('depot_intake'):  intakes.append('Depot')
+                st.write(f"Intake: {', '.join(intakes) if intakes else 'None'}")
+                st.write(f"Move & Shoot: {'Yes' if pit.get('move_shoot') else 'No'}")
+                st.write(f"Shoot From: {pit.get('shoot_area', 'N/A')}")
+            st.markdown("**Robot Description**")
+            st.info(pit.get('robot_description', 'No description recorded.'))
+            if pit.get('extra') and pit.get('extra') not in ('N/A', '', None):
+                st.markdown("**Extra Notes**")
+                st.info(pit.get('extra'))
         else:
             st.info(f"No pit scouting data found for team {selected_team}.")
 
@@ -710,17 +738,27 @@ elif page == "Team Deep-Dive":
         st.subheader("📋 Full Match Log")
         if not df_trend.empty:
             st.dataframe(df_trend.rename(columns={
-                'match_number':      'Match',
-                'contributed_points':'Points',
-                'auto_volleys_attempted': 'Auto Volleys',
-                'auto_volley_quality':    'Auto Volley Q.',
-                'tele_volleys_attempted':     'Tele Volleys',
-                'tele_volley_quality':        'Tele Volley Q.',
-                'defended_time':     'Defended?',
-                'tele_climb':        'Climb',
-                'climb_time':        'Climb Time',
-                'start_position':    'Start Pos',
-                'match_notes':       'Notes'
+                'match_number':              'Match',
+                'contributed_points':        'Points',
+                'auto_herding_push_wave':    'Auto Push',
+                'auto_herding_spit_wave':    'Auto Spit',
+                'auto_herding_launch_wave':  'Auto Launch',
+                'auto_volleys_attempted':    'Auto Volleys',
+                'auto_volley_quality':       'Auto Volley Q.',
+                'tele_herding_push_wave':    'Tele Push',
+                'tele_herding_spit_wave':    'Tele Spit',
+                'tele_herding_launch_wave':  'Tele Launch',
+                'volleys_attempted':         'Tele Volleys',
+                'volley_quality':            'Tele Volley Q.',
+                'defended_time':             'Defended?',
+                'tele_climb':                'Climb',
+                'climb_time':                'Climb Time',
+                'auto_break_down':           'Auto BD?',
+                'auto_break_down_des':       'Auto BD Notes',
+                'tele_break_down':           'Tele BD?',
+                'tele_break_down_des':       'Tele BD Notes',
+                'start_position':            'Start Pos',
+                'match_notes':               'Notes'
             }), use_container_width=True)
 
 # =============================================================================
