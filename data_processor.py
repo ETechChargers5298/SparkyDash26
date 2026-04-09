@@ -12,7 +12,7 @@ MATCH_COLUMN_MAP = {
     'autoHerdingPushWave':    'auto_herding_push_wave',
     'autoHerdingSpitWave':    'auto_herding_spit_wave',
     'autoHerdingLaunchWave':  'auto_herding_launch_wave',
-    'autoVolleysAttempted':   'auto_volleys_attempted',
+    'autoVolleys':            'auto_volleys',
     'autoVolleyQuality':      'auto_volley_quality',
     'autoClimbLevel':         'auto_climb_level',
     'autoClimbPos':           'auto_climb_pos',
@@ -24,8 +24,8 @@ MATCH_COLUMN_MAP = {
     'teleHerdingPushWave':    'tele_herding_push_wave',
     'teleHerdingSpitWave':    'tele_herding_spit_wave',
     'teleHerdingLaunchWave':  'tele_herding_launch_wave',
-    'volleysAttempted':       'volleys_attempted',
-    'volleyQuality':          'volley_quality',
+    'teleVolleys':            'tele_volleys',
+    'teleVolleyQuality':      'tele_volley_quality',
     'teleFeed':               'tele_feed',
     'crossBumpTele':          'cross_bump_tele',
     'crossTrenchTele':        'cross_trench_tele',
@@ -35,28 +35,28 @@ MATCH_COLUMN_MAP = {
     # Endgame
     'teleClimb':              'tele_climb',
     'climbTime':              'climb_time',
-    'drivetrainSpeed':        'drivetrain_speed',
+    'drivebaseSpeed':         'drivebase_speed',
     'driverSkill':            'driver_skill',
     # Metrics
     'robotTier':              'robot_tier',
     'contributedPoints':      'contributed_points',
     # Penalties & Notes
     'freeClimbPenalty':       'free_climb_penalty',
-    'teleBreakDown':          'tele_break_down',
-    'teleBreakDownDes':       'tele_break_down_des',
+    'teleBreakdown':          'tele_breakdown',
+    'teleBreakdownDes':       'tele_breakdown_des',
     'matchNotes':             'match_notes',
 }
 
 PIT_COLUMN_MAP = {
-    'team_number':      'team_number',   # already set from team_key
+    'teamNumber':       'team_number',   # already set from team_key
     'driverexp':        'driver_exp',
-    'autoPref':         'auto_pref',
+    'autoStartPref':    'auto_start_pref',
     'driverPref':       'driver_pref',
     'autoRoboStrat':    'auto_robo_strat',
     'roboStrat':        'robo_strat',
     'roboBestAuto':     'robo_best_auto',
-    'driveBaseType':    'drive_base_type',
-    'driveBaseNotes':   'drive_base_notes',
+    'drivebaseType':    'drivebase_type',
+    'drivebaseNotes':   'drivebase_notes',
     'robotWidth':       'robot_width',
     'robotLength':      'robot_length',
     'robotHeight':      'robot_height',
@@ -67,18 +67,18 @@ PIT_COLUMN_MAP = {
     'volleyAmount':     'volley_amount',
     'hopperCapacity':   'hopper_capacity',
     'useVision':        'use_vision',
-    'Climb':            'can_climb',
-    'L1Auto':           'l1_auto',
-    'L1Climb':          'l1_climb',
-    'L2Climb':          'l2_climb',
-    'L3Climb':          'l3_climb',
-    'gIntake':          'ground_intake',
-    'HPIntake':         'hp_intake',
-    'dIntake':          'depot_intake',
+    'climbAbility':     'climb_ability',
+    'l1Auto':           'l1_auto',
+    'l1Climb':          'l1_climb',
+    'l2Climb':          'l2_climb',
+    'l3Climb':          'l3_climb',
+    'groundIntake':     'ground_intake',
+    'hpIntake':         'hp_intake',
+    'depotIntake':      'depot_intake',
     'moveShoot':        'move_shoot',
     'shootArea':        'shoot_area',
-    'robotDescription': 'robot_description',
-    'extra':            'extra',
+    'robotDes':         'robot_des',
+    'pitNotes':         'pit_notes',
 }
 
 QUALITY_MAP = {
@@ -116,7 +116,7 @@ def process_match_data(csv_path, db_path):
 
     # 2. Strip percentage descriptions from quality fields
     # Scoutradioz exports "Perfect: 95-100%" — we only store "Perfect"
-    for col in ['volleyQuality', 'autoVolleyQuality']:
+    for col in ['teleVolleyQuality', 'autoVolleyQuality']:
         if col in df.columns:
             df[col] = df[col].astype(str).str.split(':').str[0].str.strip()
 
@@ -132,11 +132,11 @@ def process_match_data(csv_path, db_path):
     def climb_pts(val):
         return CLIMB_POINTS.get(str(val).strip(), 0)
 
-    tele_quality = df['volleyQuality'].apply(quality_score)          if 'volleyQuality'         in df.columns else 0.5
-    auto_quality = df['autoVolleyQuality'].apply(quality_score)      if 'autoVolleyQuality'     in df.columns else 0.5
-    tele_volleys = df['volleysAttempted'].fillna(0)                  if 'volleysAttempted'      in df.columns else 0
-    auto_volleys = df['autoVolleysAttempted'].fillna(0)              if 'autoVolleysAttempted'  in df.columns else 0
-    climb        = df['teleClimb'].apply(climb_pts)                  if 'teleClimb'             in df.columns else 0
+    tele_quality = df['teleVolleyQuality'].apply(quality_score)     if 'televolleyQuality'  in df.columns else 0.5
+    auto_quality = df['autoVolleyQuality'].apply(quality_score)     if 'autoVolleyQuality'  in df.columns else 0.5
+    tele_volleys = df['teleVolleys'].fillna(0)                      if 'televolleys'        in df.columns else 0
+    auto_volleys = df['autoVolleys'].fillna(0)                      if 'autoVolleys'        in df.columns else 0
+    climb        = df['teleClimb'].apply(climb_pts)                 if 'teleClimb'          in df.columns else 0
 
     df['contributedPoints'] = (
         (tele_volleys * tele_quality * 20) +

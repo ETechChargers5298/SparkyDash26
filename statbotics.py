@@ -7,7 +7,7 @@ try:
     EVENT_KEY = st.secrets["EVENT_KEY"]
     OUR_TEAM = st.secrets["OUR_TEAM"]
 except Exception:
-    from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+    from Config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
 
 
 STATBOTICS_BASE = "https://api.statbotics.io/v3"

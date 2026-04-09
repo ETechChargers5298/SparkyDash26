@@ -10,7 +10,7 @@ try:
 except Exception:
     # 2. Fallback to local config.py (Laptop)
     try:
-        from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+        from Config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
     except ImportError:
         st.error("❌ Configuration Error: Could not find Streamlit Secrets OR config.py.")
         st.stop() # Stops the app here so it doesn't crash later on line 14

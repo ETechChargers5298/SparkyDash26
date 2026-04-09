@@ -27,7 +27,7 @@
   {
     "type": "counter",
     "label": "A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
-    "id": "autoVolleysAttempted",
+    "id": "autoVolleys",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -171,8 +171,8 @@
   },
   {
     "type": "counter",
-    "label": "Volleys Attempted: A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
-    "id": "teleVolleysAttempted",
+    "label": "Tele Volleys: A volley is a 3 to 10 second sequence of fuel being launched towards the hub",
+    "id": "teleVolleys",
     "allow_negative": false,
     "variant": "standard"
   },
@@ -305,7 +305,7 @@
   {
     "type": "derived",
     "id": "contributedPoints",
-    "formula": "(teleVolleysAttempted * 10) + (autoVolleysAttempted * 10)"
+    "formula": "(teleVolleys * 10) + (autoVolleys * 10)"
   },
   {
     "type": "spacer"
