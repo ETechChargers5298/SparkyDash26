@@ -17,7 +17,7 @@ try:
     EVENT_KEY = st.secrets["EVENT_KEY"]
     OUR_TEAM = st.secrets["OUR_TEAM"]
 except Exception:
-    from config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
+    from Config import TBA_API_KEY, EVENT_KEY, OUR_TEAM
 
 
 
@@ -696,7 +696,7 @@ elif page == "Team Deep-Dive":
             with p1:
                 st.markdown("**Robot**")
                 st.write(f"Drive Base: {pit.get('drive_base_type', 'N/A')}")
-                st.write(f"Dimensions: {pit.get('robot_width', '?')}" W × {pit.get('robot_length', '?')}" L × {pit.get('robot_height', '?')}" H")
+                st.write(f"Dimensions: {pit.get('robot_width', '?')}\" W \u00d7 {pit.get('robot_length', '?')}\" L \u00d7 {pit.get('robot_height', '?')}\" H")
                 st.write(f"Extends: {'Yes' if pit.get('extendable') else 'No'} | Multi-Dir: {'Yes' if pit.get('extend_multi_dir') else 'No'}")
                 st.write(f"Turret: {'Yes' if pit.get('use_turret') else 'No'} ({pit.get('num_turrets', 0)} turrets)")
                 st.write(f"Vision: {'Yes' if pit.get('use_vision') else 'No'}")
