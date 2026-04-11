@@ -1,2 +1,4 @@
-config.py
+Config.py
+*.db
 __pycache__
+*.pyc
