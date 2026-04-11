@@ -131,10 +131,9 @@ def process_match_data(csv_path, db_path):
 
     def climb_pts(val):
         return CLIMB_POINTS.get(str(val).strip(), 0)
-
-    tele_quality = df['teleVolleyQuality'].apply(quality_score)     if 'televolleyQuality'  in df.columns else 0.5
+    tele_quality = df['teleVolleyQuality'].apply(quality_score) if 'teleVolleyQuality' in df.columns else 0.5
+    tele_volleys = df['teleVolleys'].fillna(0)                  if 'teleVolleys'       in df.columns else 0
     auto_quality = df['autoVolleyQuality'].apply(quality_score)     if 'autoVolleyQuality'  in df.columns else 0.5
-    tele_volleys = df['teleVolleys'].fillna(0)                      if 'televolleys'        in df.columns else 0
     auto_volleys = df['autoVolleys'].fillna(0)                      if 'autoVolleys'        in df.columns else 0
     climb        = df['teleClimb'].apply(climb_pts)                 if 'teleClimb'          in df.columns else 0
 
