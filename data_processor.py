@@ -18,8 +18,8 @@ MATCH_COLUMN_MAP = {
     'autoClimbPos':           'auto_climb_pos',
     'crossBumpAuto':          'cross_bump_auto',
     'crossTrenchAuto':        'cross_trench_auto',
-    'autoBreakDown':          'auto_break_down',
-    'autoBreakDownDes':       'auto_break_down_des',
+    'autoBreakdown':          'auto_breakdown',
+    'autoBreakdownDes':       'auto_breakdown_des',
     # Teleop
     'teleHerdingPushWave':    'tele_herding_push_wave',
     'teleHerdingSpitWave':    'tele_herding_spit_wave',
@@ -49,9 +49,9 @@ MATCH_COLUMN_MAP = {
 
 PIT_COLUMN_MAP = {
     'teamNumber':       'team_number',   # already set from team_key
-    'driverexp':        'driver_exp',
+    'driverExp':        'driver_exp',
     'autoStartPref':    'auto_start_pref',
-    'driverPref':       'driver_pref',
+    'driverStationPref': 'driver_pref',
     'autoRoboStrat':    'auto_robo_strat',
     'roboStrat':        'robo_strat',
     'roboBestAuto':     'robo_best_auto',
@@ -63,7 +63,7 @@ PIT_COLUMN_MAP = {
     'extendable':       'extendable',
     'extendMultiDir':   'extend_multi_dir',
     'useTurret':        'use_turret',
-    'numberOfTurrets':  'num_turrets',
+    'numTurrets':       'num_turrets',
     'volleyAmount':     'volley_amount',
     'hopperCapacity':   'hopper_capacity',
     'useVision':        'use_vision',
